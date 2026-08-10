@@ -1,4 +1,4 @@
-use std::{error::Error, io, pin::Pin};
+use std::{error::Error, io, pin::Pin, sync::Arc};
 
 use futures::{
     prelude::*,
@@ -35,8 +35,15 @@ async fn run() -> Result<(), Box<dyn Error>> {
 
     // Wrap both in our Connection struct and start the TLS handshake on it
     let connection = Connection { read, write };
-    let connector = async_tls::TlsConnector::new();
-    let mut connection = connector.connect("www.rust-lang.org", connection).await?;
+    let roots = futures_rustls::rustls::RootCertStore::from_iter(
+        webpki_roots::TLS_SERVER_ROOTS.iter().cloned(),
+    );
+    let config = futures_rustls::rustls::ClientConfig::builder()
+        .with_root_certificates(roots)
+        .with_no_client_auth();
+    let connector = futures_rustls::TlsConnector::from(Arc::new(config));
+    let server_name = futures_rustls::rustls::pki_types::ServerName::try_from("www.rust-lang.org")?;
+    let mut connection = connector.connect(server_name, connection).await?;
 
     // Send the HTTP request
     connection
