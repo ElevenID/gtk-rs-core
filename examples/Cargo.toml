@@ -11,8 +11,14 @@ futures-channel = "0.3"
 glib.workspace = true
 gio.workspace = true
 
-[dependencies.async-tls]
-version = "0.13"
+[dependencies.futures-rustls]
+version = "0.26.0"
+default-features = false
+features = ["ring", "tls12"]
+optional = true
+
+[dependencies.webpki-roots]
+version = "1.0.9"
 optional = true
 
 [build-dependencies.glib-build-tools]
@@ -21,7 +27,7 @@ path = "../glib-build-tools"
 [[bin]]
 name = "gio_async_tls"
 path = "gio_async_tls/main.rs"
-required-features = ["async-tls"]
+required-features = ["futures-rustls", "webpki-roots"]
 
 [[bin]]
 name = "gio_cancellable_future"

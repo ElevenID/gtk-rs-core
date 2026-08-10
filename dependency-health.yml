@@ -1,0 +1,18 @@
+version: 1
+dependencies:
+  - package: futures-rustls
+    ecosystem: rust
+    owner: ElevenID
+    upstream: https://github.com/quininer/futures-rustls
+    current: "0.26.0"
+    target: current-supported-release
+    status: retained
+    decision: replace
+    advisories: []
+    resolved-advisories:
+      - GHSA-82j2-j2ch-gfr8
+      - GHSA-xgp8-3hg3-c2mh
+      - GHSA-965h-392x-2mh5
+    tracking-issue: https://github.com/ElevenID/gtk-rs-core/pull/3
+    review-after: 2026-11-09
+    rationale: The GIO TLS example moved from unmaintained async-tls 0.13 and Rustls 0.21 to futures-rustls 0.26, Rustls 0.23, and rustls-webpki 0.103.13. The example keeps real TLS certificate validation and compiles through the repository's docs/dependency-only path.
